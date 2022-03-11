@@ -2,6 +2,7 @@ import React, { useState, useContext, useMemo } from "react";
 import styled from "styled-components";
 import { Rnd } from "react-rnd";
 import PropTypes from "prop-types";
+import { parseUrl } from "query-string";
 import AppContext from "../Context/AppContext";
 
 const MIN_FACTOR = 20;
@@ -77,6 +78,17 @@ const YoutubeCard = ({ cardData, updateData }) => {
     updateData(newData);
   };
 
+  const handleDblClickOverlay = () => {
+    const url = prompt("복사한 유튜브 주소를 입력해주세요.");
+    const parsedUrl = parseUrl(url);
+    const newVideoId = parsedUrl.query.v;
+    if (newVideoId !== undefined) {
+      const newData = Object.assign(cardData);
+      newData.videoId = newVideoId;
+      updateData(newData);
+    }
+  };
+
   const defaultStyle = {
     x: cardData.x,
     y: cardData.y,
@@ -102,7 +114,9 @@ const YoutubeCard = ({ cardData, updateData }) => {
       enableResizing={editMode}
     >
       <Wrapper>
-        {editMode && <Overlay bgColor={color} />}
+        {editMode && (
+          <Overlay bgColor={color} onDoubleClick={handleDblClickOverlay} />
+        )}
         <Content>
           <iframe
             width="100%"
