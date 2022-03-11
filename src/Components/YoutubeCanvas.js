@@ -42,10 +42,10 @@ const YoutubeCanvas = () => {
       setData(JSON.parse(db));
     } else {
       setData([
-        { id: "0", x: 0, y: 0, factor: 20, videoId: "XA2YEHn-A8Q" },
-        { id: "1", x: 640, y: 0, factor: 40, videoId: "XA2YEHn-A8Q" },
-        { id: "2", x: 0, y: 180, factor: 20, videoId: "XA2YEHn-A8Q" },
-        { id: "3", x: 320, y: 0, factor: 20, videoId: "XA2YEHn-A8Q" },
+        { id: "0", x: 320, y: 630, factor: 20, videoId: "XA2YEHn-A8Q" },
+        { id: "1", x: 960, y: 180, factor: 50, videoId: "Xuxgu5KwoOA" },
+        { id: "2", x: 640, y: 630, factor: 30, videoId: "y49wGJyxDXs" },
+        { id: "3", x: 320, y: 270, factor: 40, videoId: "2skPtp8hjEM" },
       ]);
     }
   }, []);
