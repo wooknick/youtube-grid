@@ -13,6 +13,7 @@ export default createGlobalStyle`
     }
     body{
         width: 100%;
+        overscroll-behavior: none;
     }
     a{
         text-decoration: none;
