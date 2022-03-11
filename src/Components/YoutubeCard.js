@@ -22,8 +22,8 @@ const Wrapper = styled.div`
 `;
 
 const Content = styled.div`
-  width: calc(100% - 16px);
-  height: calc(100% - 16px);
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -48,7 +48,7 @@ const randomColor = () => {
   return colors[idx];
 };
 
-const YoutubeCard = ({ cardData, updateData }) => {
+const YoutubeCard = ({ cardData, updateData, removeData }) => {
   const { editMode } = useContext(AppContext);
   /**
    * Problem : onDragStop에 deltaX, deltaY 계산 버그 존재함(22.3.12 기준)
@@ -79,7 +79,10 @@ const YoutubeCard = ({ cardData, updateData }) => {
   };
 
   const handleDblClickOverlay = () => {
-    const url = prompt("복사한 유튜브 주소를 입력해주세요.");
+    const url = prompt("복사한 유튜브 주소를 입력해주세요.") || "";
+    if (url === "delete" || url === "삭제" || url === "d") {
+      removeData(cardData.id);
+    }
     const parsedUrl = parseUrl(url);
     const newVideoId = parsedUrl.query.v;
     if (newVideoId !== undefined) {
@@ -118,15 +121,19 @@ const YoutubeCard = ({ cardData, updateData }) => {
           <Overlay bgColor={color} onDoubleClick={handleDblClickOverlay} />
         )}
         <Content>
-          <iframe
-            width="100%"
-            height="100%"
-            src={`https://www.youtube.com/embed/${cardData.videoId}`}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+          {cardData.videoId === "" ? (
+            <Overlay bgColor={color} onDoubleClick={handleDblClickOverlay} />
+          ) : (
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${cardData.videoId}`}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          )}
         </Content>
       </Wrapper>
     </Rnd>
@@ -137,11 +144,12 @@ export default YoutubeCard;
 
 YoutubeCard.propTypes = {
   cardData: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     factor: PropTypes.number.isRequired,
     videoId: PropTypes.string.isRequired,
   }).isRequired,
   updateData: PropTypes.func.isRequired,
+  removeData: PropTypes.func.isRequired,
 };

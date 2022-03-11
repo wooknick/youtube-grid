@@ -42,10 +42,10 @@ const YoutubeCanvas = () => {
       setData(JSON.parse(db));
     } else {
       setData([
-        { id: 0, x: 0, y: 0, factor: 20, videoId: "XA2YEHn-A8Q" },
-        { id: 1, x: 640, y: 0, factor: 40, videoId: "XA2YEHn-A8Q" },
-        { id: 2, x: 0, y: 180, factor: 20, videoId: "XA2YEHn-A8Q" },
-        { id: 3, x: 320, y: 0, factor: 20, videoId: "XA2YEHn-A8Q" },
+        { id: "0", x: 0, y: 0, factor: 20, videoId: "XA2YEHn-A8Q" },
+        { id: "1", x: 640, y: 0, factor: 40, videoId: "XA2YEHn-A8Q" },
+        { id: "2", x: 0, y: 180, factor: 20, videoId: "XA2YEHn-A8Q" },
+        { id: "3", x: 320, y: 0, factor: 20, videoId: "XA2YEHn-A8Q" },
       ]);
     }
   }, []);
@@ -58,17 +58,51 @@ const YoutubeCanvas = () => {
     localStorage.setItem("youtube-grid-data", JSON.stringify(newData));
   };
 
+  const addData = ({ x, y }) => {
+    const newItem = {
+      id: v4(),
+      x,
+      y,
+      factor: 20,
+      videoId: "",
+    };
+    const newData = [...data, newItem];
+    setData(newData);
+    localStorage.setItem("youtube-grid-data", JSON.stringify(newData));
+  };
+
+  const removeData = id => {
+    const newData = [...data];
+    const targetIdx = newData.findIndex(v => v.id === id);
+    newData.splice(targetIdx, 1);
+    setData(newData);
+    localStorage.setItem("youtube-grid-data", JSON.stringify(newData));
+  };
+
+  const handleDblClick = e => {
+    const { target } = e;
+    const gridIdx = target.dataset.grididx;
+    const x = Math.min(gridIdx % 12, 10);
+    const y = Math.min(Math.floor(gridIdx / 12), 10);
+    addData({ x: x * 160, y: y * 90 });
+  };
+
   return (
     <Wrapper>
       {editMode && (
-        <Grid>
-          {new Array(144).fill(0).map(() => (
-            <GridBox key={v4()} />
+        <Grid onDoubleClick={handleDblClick}>
+          {new Array(144).fill(0).map((_, idx) => (
+            <GridBox key={v4()} data-grididx={idx} />
           ))}
         </Grid>
       )}
       {data.map(d => (
-        <YoutubeCard cardData={d} key={d.id} updateData={updateData} />
+        <YoutubeCard
+          cardData={d}
+          key={d.id}
+          updateData={updateData}
+          removeData={removeData}
+        />
       ))}
     </Wrapper>
   );
