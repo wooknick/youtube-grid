@@ -43,14 +43,17 @@ const YoutubeCard = ({ cardData, updateData }) => {
 
   const handleDragStop = () => {
     const { x, y } = position;
-    const { id, factor } = cardData;
-    updateData({ id, x, y, factor });
+    const newData = Object.assign(cardData);
+    newData.x = x;
+    newData.y = y;
+    updateData(newData);
   };
 
   const handleResizeStop = (_, __, ref) => {
-    const { id, x, y } = cardData;
     const factor = ref.offsetWidth / 16;
-    updateData({ id, x, y, factor });
+    const newData = Object.assign(cardData);
+    newData.factor = factor;
+    updateData(newData);
   };
 
   const defaultStyle = {
@@ -76,7 +79,17 @@ const YoutubeCard = ({ cardData, updateData }) => {
       onDragStop={handleDragStop}
     >
       <Wrapper>
-        <Content>youtubecard</Content>
+        <Content>
+          <iframe
+            width="100%"
+            height="100%"
+            src={`https://www.youtube.com/embed/${cardData.videoId}`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </Content>
       </Wrapper>
     </Rnd>
   );
@@ -90,6 +103,7 @@ YoutubeCard.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     factor: PropTypes.number.isRequired,
+    videoId: PropTypes.string.isRequired,
   }).isRequired,
   updateData: PropTypes.func.isRequired,
 };

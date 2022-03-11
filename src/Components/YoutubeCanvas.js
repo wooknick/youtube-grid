@@ -19,17 +19,18 @@ const YoutubeCanvas = () => {
       setData(JSON.parse(db));
     } else {
       setData([
-        { id: 0, x: 0, y: 0, factor: 20 },
-        { id: 1, x: 640, y: 0, factor: 40 },
-        { id: 2, x: 0, y: 180, factor: 20 },
-        { id: 3, x: 320, y: 0, factor: 20 },
+        { id: 0, x: 0, y: 0, factor: 20, videoId: "XA2YEHn-A8Q" },
+        { id: 1, x: 640, y: 0, factor: 40, videoId: "XA2YEHn-A8Q" },
+        { id: 2, x: 0, y: 180, factor: 20, videoId: "XA2YEHn-A8Q" },
+        { id: 3, x: 320, y: 0, factor: 20, videoId: "XA2YEHn-A8Q" },
       ]);
     }
   }, []);
 
   const updateData = obj => {
     const newData = [...data];
-    newData[obj.id] = obj;
+    const targetIdx = newData.findIndex(v => v.id === obj.id);
+    newData[targetIdx] = obj;
     setData(newData);
     localStorage.setItem("youtube-grid-data", JSON.stringify(newData));
   };
