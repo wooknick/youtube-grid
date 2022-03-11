@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
+import { v4 } from "uuid";
 import YoutubeCard from "./YoutubeCard";
+import AppContext from "../Context/AppContext";
 
 const Wrapper = styled.div`
+  position: relative;
   margin: 0 auto;
   width: 1920px;
   height: 1080px;
@@ -10,7 +13,27 @@ const Wrapper = styled.div`
   background-color: #e3e3e3;
 `;
 
+const Grid = styled.div`
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid #aaaaaa;
+  box-sizing: content-box;
+`;
+
+const GridBox = styled.div`
+  width: 160px;
+  height: 90px;
+  background-color: #e3e3e3;
+  border: 1px solid #aaaaaa;
+`;
+
 const YoutubeCanvas = () => {
+  const { editMode } = useContext(AppContext);
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -37,6 +60,13 @@ const YoutubeCanvas = () => {
 
   return (
     <Wrapper>
+      {editMode && (
+        <Grid>
+          {new Array(144).fill(0).map(() => (
+            <GridBox key={v4()} />
+          ))}
+        </Grid>
+      )}
       {data.map(d => (
         <YoutubeCard cardData={d} key={d.id} updateData={updateData} />
       ))}
