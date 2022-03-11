@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useMemo } from "react";
 import styled from "styled-components";
 import { Rnd } from "react-rnd";
 import PropTypes from "prop-types";
+import AppContext from "../Context/AppContext";
 
 const MIN_FACTOR = 20;
 const MIN_WIDTH = 16 * MIN_FACTOR;
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 const Content = styled.div`
@@ -28,12 +30,31 @@ const Content = styled.div`
   background-color: #eeeeee;
 `;
 
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: ${props => props.bgColor};
+  opacity: 0.95;
+  border: 1px solid white;
+`;
+
+const randomColor = () => {
+  const colors = ["#F23847", "#95BF8A", "#DAF2C2", "#F2D027", "#F2916D"];
+  const idx = Math.floor(Math.random() * colors.length);
+  return colors[idx];
+};
+
 const YoutubeCard = ({ cardData, updateData }) => {
+  const { editMode } = useContext(AppContext);
   /**
    * Problem : onDragStop에 deltaX, deltaY 계산 버그 존재함(22.3.12 기준)
    * Solution : 버그가 없는 onDrag를 통해 position을 직접 계산하여 관리함
    */
   const [position, setPosition] = useState({ x: cardData.x, y: cardData.y });
+  const color = useMemo(() => randomColor(cardData.id), [cardData.id]);
 
   const handleDrag = (_, data) => {
     const { deltaX, deltaY } = data;
@@ -77,8 +98,11 @@ const YoutubeCard = ({ cardData, updateData }) => {
       onResizeStop={handleResizeStop}
       onDrag={handleDrag}
       onDragStop={handleDragStop}
+      disableDragging={!editMode}
+      enableResizing={editMode}
     >
       <Wrapper>
+        {editMode && <Overlay bgColor={color} />}
         <Content>
           <iframe
             width="100%"
